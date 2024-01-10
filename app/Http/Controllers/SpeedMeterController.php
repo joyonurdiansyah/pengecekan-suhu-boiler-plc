@@ -177,6 +177,25 @@ class SpeedMeterController extends Controller
             return response()->json(['message' => 'Data RHStoker tidak ditemukan'], 404);
         }
     }
+
+
+    public function speedMeterLHGuiloutine(){
+        $query = "
+            SELECT LHGuiloutine, waktu
+            FROM readsensor
+            WHERE LHGuiloutine IS NOT NULL
+            ORDER BY waktu DESC
+            LIMIT 1
+        ";
+    
+        $latestData = DB::select($query);
+    
+        if ($latestData) {
+            return response()->json($latestData[0]);
+        } else {
+            return response()->json(['message' => 'Data LHGuiloutine tidak ditemukan'], 404);
+        }
+    }
     
     
 }
