@@ -69,7 +69,8 @@
             #RHFDFans, 
             #IDFans, 
             #LHStokers, 
-            #RHStockers {
+            #RHStockers,
+            #LHGuiloutines {
                 cursor: pointer;
             }
 
@@ -239,15 +240,10 @@
                                                         <div class="card-content">
                                                             <div
                                                                 style="text-align: center; font-size: 36px; margin-top:30px;">
-                                                                <i class="bi bi-speedometer"></i>
-                                                            </div>
-                                                            <div class="card-body text-center" style="padding-top: 45px;">
-                                                                <h5 class="card-title"> FEEDTANK TEMP </h5>
-                                                                <p class="card-text"
-                                                                    style="font-size: 14px; position:relative; top:20px; color:#3498db;">
-                                                                    3.0 M3/H
-                                                                </p>
-                                                            </div>
+                                                            <figure class="highcharts-figure">
+                                                                <div id="LHGuiloutines"></div>
+                                                            </figure>
+                                                        </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -2203,6 +2199,131 @@
         });
     </script>
 
+    {{-- speedmeter LHGuiloutine  --}}
+    <script>
+        $(document).ready(function() {
+            var chart = Highcharts.chart('LHGuiloutines', {
+                chart: {
+                    type: 'gauge',
+                    plotBackgroundColor: null,
+                    plotBackgroundImage: null,
+                    plotBorderWidth: 0,
+                    plotShadow: false,
+                    height: '80%'
+                },
+                title: {
+                    text: 'LHGuiloutine'
+                },
+                pane: {
+                    startAngle: -90,
+                    endAngle: 90,
+                    background: null,
+                    center: ['50%', '75%'],
+                    size: '110%'
+                },
+                yAxis: {
+                min: 100,
+                max: 140,
+                tickPixelInterval: 72,
+                tickPosition: 'inside',
+                tickColor: Highcharts.defaultOptions.chart.backgroundColor || '#FFFFFF',
+                tickLength: 20,
+                tickWidth: 2,
+                minorTickInterval: null,
+                labels: {
+                    distance: 20,
+                    style: {
+                        fontSize: '14px'
+                    }
+                },
+                lineWidth: 0,
+                plotBands: [
+                    {
+                        from: 100,
+                        to: 115,
+                        color: '#DF5353',
+                        thickness: 20
+                    },
+                    {
+                        from: 115,
+                        to: 125,
+                        color: '#DDDF0D',
+                        thickness: 20
+                    },
+                    {
+                        from: 125,
+                        to: 140,
+                        color: '#55BF3B',
+                        thickness: 20
+                    }
+                ]
+            },
+                series: [{
+                    name: 'Level',
+                    data: [{
+                        y: 0,
+                        waktu: ''
+                    }],
+                    tooltip: {
+                        valueSuffix: '%'
+                    },
+                    dataLabels: {
+                        format: '{y}%',
+                        borderWidth: 0,
+                        color: (
+                            Highcharts.defaultOptions.title &&
+                            Highcharts.defaultOptions.title.style &&
+                            Highcharts.defaultOptions.title.style.color
+                        ) || '#333333',
+                        style: {
+                            fontSize: '16px'
+                        }
+                    },
+                    dial: {
+                        radius: '80%',
+                        backgroundColor: 'gray',
+                        baseWidth: 12,
+                        baseLength: '0%',
+                        rearLength: '0%'
+                    },
+                    pivot: {
+                        backgroundColor: 'gray',
+                        radius: 6
+                    }
+                }],
+                tooltip: {
+                    formatter: function() {
+                        return 'Waktu: ' + this.point.waktu + '<br>Level: ' + this.y + '%';
+                    }
+                },
+            });
+
+            function updateLHGuiloutine() {
+                $.ajax({
+                    url: '/boiler/LHGuiloutine',
+                    type: 'GET',
+                    success: function(data) {
+                        console.log("Data LHStocker: ", data);
+                        const newVal = parseFloat(data.LHGuiloutine);
+                        if (newVal < 100 || newVal > 140) {
+                            return;
+                        }
+                        chart.series[0].points[0].update({
+                            y: newVal,
+                            waktu: data.waktu
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error in updateLHGuiloutine: ", error);
+                    }
+                });
+            }
+
+            updateLHGuiloutine();
+            setInterval(updateLHGuiloutine, 1000);
+        });
+    </script>
+
     {{-- geser card --}}
     <script>
         $(document).ready(function() {
@@ -2340,7 +2461,31 @@
         });
     </script>
 
-    {{-- tampil dan sembunyikan spinner --}}
+    {{-- munculkan notifikasi pengembangan data sensor --}}
+    <script>
+        var image = new Image();
+        image.src = 'assets/mazer/dist/assets/compiled/png/statistics.png';
     
+        function showUpdateFiturLHGuiloutines() {
+            Swal.fire({
+                title: 'Info',
+                text: 'Linechart LHGuiloutines masih dalam tahap pengembangan',
+                icon: 'info',
+                confirmButtonText: 'OK'
+            });
+        }
+
+        function showUpdateFiturRHGuiloutine() {
+            swal.fire({
+                title: 'Info',
+                text: 'Linechart RHGuiloutines masih dalam tahap pengembangan',
+                icon: 'info',
+                confirmButtonText: 'OK'
+            });
+        }
+    
+        document.getElementById('LHGuiloutines').addEventListener('click', showUpdateFiturLHGuiloutines);
+        document.getElementById('RHGuiloutines').addEventListener('click', showUpdateFiturRHGuiloutine);
+    </script>      
     
 @endpush

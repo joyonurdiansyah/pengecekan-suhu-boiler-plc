@@ -42,6 +42,8 @@ Route::get('/boiler/IDFan', 'SpeedMeterController@speedMeterIDFan')->name('boile
 Route::get('/boiler/LHStocker', 'SpeedMeterController@speedMeterLHStocker')->name('boiler.LH-Stocker');
 // speedmeter RH Stocker
 Route::get('/boiler/RHStocker', 'SpeedMeterController@speedMeterRHStocker')->name('boiler.RH-Stocker');
+// speedmeter LHGuiloutine
+Route::get('/boiler/LHGuiloutine', 'SpeedMeterController@speedMeterLHGuiloutine')->name('boiler.speedMeterLHGuiloutine');
 
 
 // line chart stream pressure
